@@ -27,7 +27,7 @@ export default [
         "varsIgnorePattern": "^[A-Z_]",
         "argsIgnorePattern": "^[A-Z_]"
       }],
-      "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }]
+      "react-refresh/only-export-components": "off"
     }
   }
 ];

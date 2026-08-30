@@ -42,7 +42,7 @@ CREATE TABLE invoices (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   customer_id INT NOT NULL,
-  invoice_number VARCHAR(50) UNIQUE NOT NULL,
+  invoice_number VARCHAR(50) NOT NULL,
   invoice_date DATE NOT NULL,
   due_date DATE,
   subtotal DECIMAL(12,2) NOT NULL DEFAULT 0,
@@ -54,6 +54,7 @@ CREATE TABLE invoices (
   notes TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY invoices_user_number_unique (user_id, invoice_number),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE RESTRICT
 );

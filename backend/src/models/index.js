@@ -34,25 +34,31 @@ export const Setting = sequelize.define("Setting", {
   }
 });
 
-export const Invoice = sequelize.define("Invoice", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  userId: { type: DataTypes.INTEGER, allowNull: false },
-  customerId: { type: DataTypes.INTEGER, allowNull: false },
-  invoiceNumber: { type: DataTypes.STRING(50), allowNull: false, unique: true },
-  invoiceDate: { type: DataTypes.DATEONLY, allowNull: false },
-  dueDate: { type: DataTypes.DATEONLY },
-  subtotal: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
-  taxRate: { type: DataTypes.DECIMAL(5, 2), allowNull: false, defaultValue: 0 },
-  tax: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
-  discount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
-  total: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
-  status: {
-    type: DataTypes.ENUM("draft", "sent", "paid", "overdue"),
-    allowNull: false,
-    defaultValue: "draft"
+export const Invoice = sequelize.define(
+  "Invoice",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
+    customerId: { type: DataTypes.INTEGER, allowNull: false },
+    invoiceNumber: { type: DataTypes.STRING(50), allowNull: false },
+    invoiceDate: { type: DataTypes.DATEONLY, allowNull: false },
+    dueDate: { type: DataTypes.DATEONLY },
+    subtotal: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+    taxRate: { type: DataTypes.DECIMAL(5, 2), allowNull: false, defaultValue: 0 },
+    tax: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+    discount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+    total: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+    status: {
+      type: DataTypes.ENUM("draft", "sent", "paid", "overdue"),
+      allowNull: false,
+      defaultValue: "draft"
+    },
+    notes: { type: DataTypes.TEXT, defaultValue: "" }
   },
-  notes: { type: DataTypes.TEXT, defaultValue: "" }
-});
+  {
+    indexes: [{ unique: true, fields: ["user_id", "invoice_number"] }]
+  }
+);
 
 export const InvoiceItem = sequelize.define("InvoiceItem", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
