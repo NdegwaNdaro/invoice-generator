@@ -1,9 +1,11 @@
 import {
+  ArrowDownCircle,
   FilePlus2,
   Files,
   LayoutDashboard,
   LogOut,
   Menu,
+  Repeat2,
   Settings,
   Users,
   X
@@ -17,6 +19,8 @@ const links = [
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/invoices", label: "Invoices", icon: Files },
   { to: "/invoices/new", label: "Create invoice", icon: FilePlus2 },
+  { to: "/payments", label: "Payments", icon: ArrowDownCircle },
+  { to: "/recurring-invoices", label: "Recurring", icon: Repeat2 },
   { to: "/settings", label: "Settings", icon: Settings }
 ];
 

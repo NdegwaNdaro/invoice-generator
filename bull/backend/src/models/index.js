@@ -60,6 +60,38 @@ export const Invoice = sequelize.define(
   }
 );
 
+export const Payment = sequelize.define("Payment", {
+  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
+  invoiceId: { type: DataTypes.INTEGER, allowNull: false },
+  customerId: { type: DataTypes.INTEGER, allowNull: false },
+  amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+  paymentDate: { type: DataTypes.DATEONLY, allowNull: false },
+  method: { type: DataTypes.STRING(30), defaultValue: "bank_transfer" },
+  notes: { type: DataTypes.TEXT, defaultValue: "" }
+});
+
+export const RecurringInvoice = sequelize.define("RecurringInvoice", {
+  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
+  customerId: { type: DataTypes.INTEGER, allowNull: false },
+  title: { type: DataTypes.STRING(160), allowNull: false },
+  description: { type: DataTypes.TEXT, defaultValue: "" },
+  amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+  frequency: {
+    type: DataTypes.ENUM("weekly", "monthly", "quarterly"),
+    allowNull: false,
+    defaultValue: "monthly"
+  },
+  nextRunDate: { type: DataTypes.DATEONLY, allowNull: false },
+  status: {
+    type: DataTypes.ENUM("active", "paused"),
+    allowNull: false,
+    defaultValue: "active"
+  },
+  notes: { type: DataTypes.TEXT, defaultValue: "" }
+});
+
 export const InvoiceItem = sequelize.define("InvoiceItem", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   invoiceId: { type: DataTypes.INTEGER, allowNull: false },
@@ -83,5 +115,17 @@ Invoice.hasMany(InvoiceItem, {
   onDelete: "CASCADE"
 });
 InvoiceItem.belongsTo(Invoice, { foreignKey: "invoiceId" });
+
+User.hasMany(Payment, { foreignKey: "userId", onDelete: "CASCADE" });
+Payment.belongsTo(User, { foreignKey: "userId" });
+Invoice.hasMany(Payment, { foreignKey: "invoiceId", as: "payments", onDelete: "CASCADE" });
+Payment.belongsTo(Invoice, { foreignKey: "invoiceId" });
+Customer.hasMany(Payment, { foreignKey: "customerId", onDelete: "CASCADE" });
+Payment.belongsTo(Customer, { foreignKey: "customerId" });
+
+User.hasMany(RecurringInvoice, { foreignKey: "userId", onDelete: "CASCADE" });
+RecurringInvoice.belongsTo(User, { foreignKey: "userId" });
+Customer.hasMany(RecurringInvoice, { foreignKey: "customerId", onDelete: "RESTRICT" });
+RecurringInvoice.belongsTo(Customer, { foreignKey: "customerId" });
 
 export { sequelize };

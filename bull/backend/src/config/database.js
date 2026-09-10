@@ -1,7 +1,8 @@
 import { fileURLToPath } from "node:url";
 import { Sequelize } from "sequelize";
 
-const useSQLite = !process.env.DB_HOST && process.env.DB_DIALECT !== "mysql";
+const dbDialect = process.env.DB_DIALECT || (process.env.DB_HOST ? "mysql" : "sqlite");
+const useSQLite = dbDialect === "sqlite";
 const dbConfig = useSQLite
   ? {
       dialect: "sqlite",
@@ -12,7 +13,7 @@ const dbConfig = useSQLite
   : {
       host: process.env.DB_HOST || "localhost",
       port: Number(process.env.DB_PORT || 3306),
-      dialect: process.env.DB_DIALECT || "mysql",
+      dialect: "mysql",
       logging: process.env.NODE_ENV === "development" ? console.log : false,
       define: {
         underscored: true

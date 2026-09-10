@@ -34,16 +34,24 @@ app.use((req, res, next) => {
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = new Set([
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:5174"
-      ]);
-
-      if (!origin || allowedOrigins.has(origin)) {
+      if (!origin) {
         callback(null, true);
         return;
+      }
+
+      try {
+        const { hostname, protocol, port } = new URL(origin);
+        const isLocalDevOrigin =
+          (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0") &&
+          ["http:", "https:"].includes(protocol) &&
+          (port === "" || Number(port) >= 1);
+
+        if (isLocalDevOrigin) {
+          callback(null, true);
+          return;
+        }
+      } catch {
+        // ignore malformed origins and reject below
       }
 
       callback(new Error("Not allowed by CORS"));
