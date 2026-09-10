@@ -1,4 +1,4 @@
-import { Pencil, Plus, Search, Trash2, UserRound } from "lucide-react";
+import { Eye, Pencil, Plus, Search, Trash2, UserRound } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../api.js";
 import EmptyState from "../components/EmptyState.jsx";
@@ -73,7 +73,7 @@ export default function CustomersPage() {
                   <td><div className="table-identity"><span><UserRound /></span><strong>{customer.name}</strong></div></td>
                   <td><strong>{customer.email || "—"}</strong><small>{customer.phone || ""}</small></td>
                   <td>{customer.address || "—"}</td>
-                  <td className="table-actions"><button onClick={() => openForm(customer)} title="Edit"><Pencil size={17} /></button><button onClick={() => remove(customer)} title="Delete"><Trash2 size={17} /></button></td>
+                  <td className="table-actions"><button onClick={() => window.location.href = `/customers/${customer.id}/ledger`} title="Ledger"><Eye size={17} /></button><button onClick={() => openForm(customer)} title="Edit"><Pencil size={17} /></button><button onClick={() => remove(customer)} title="Delete"><Trash2 size={17} /></button></td>
                 </tr>
               ))}
             </tbody>

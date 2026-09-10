@@ -7,6 +7,7 @@ import {
   Menu,
   Repeat2,
   Settings,
+  TrendingUp,
   Users,
   X
 } from "lucide-react";
@@ -21,6 +22,7 @@ const links = [
   { to: "/invoices/new", label: "Create invoice", icon: FilePlus2 },
   { to: "/payments", label: "Payments", icon: ArrowDownCircle },
   { to: "/recurring-invoices", label: "Recurring", icon: Repeat2 },
+  { to: "/reports", label: "Reports", icon: TrendingUp },
   { to: "/settings", label: "Settings", icon: Settings }
 ];
 

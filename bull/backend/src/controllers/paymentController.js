@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Customer, Invoice, Payment } from "../models/index.js";
+import { Customer, Invoice, Payment, PaymentAuditLog } from "../models/index.js";
 
 export async function listPayments(req, res) {
   const where = { userId: req.user.id };
@@ -43,6 +43,15 @@ export async function createPayment(req, res) {
     notes: notes?.trim() || ""
   });
 
+  await PaymentAuditLog.create({
+    userId: req.user.id,
+    paymentId: payment.id,
+    invoiceId: invoice.id,
+    customerId: customer.id,
+    action: "created",
+    newValues: payment.toJSON()
+  });
+
   const totalPayments = await Payment.sum("amount", {
     where: { invoiceId: invoice.id, userId: req.user.id }
   });
@@ -65,11 +74,23 @@ export async function updatePayment(req, res) {
     return res.status(400).json({ message: "A valid payment amount is required." });
   }
 
+  const previousValues = payment.toJSON();
+
   await payment.update({
     amount,
     paymentDate: paymentDate || payment.paymentDate,
     method: method || payment.method,
     notes: notes?.trim() || payment.notes
+  });
+
+  await PaymentAuditLog.create({
+    userId: req.user.id,
+    paymentId: payment.id,
+    invoiceId: payment.invoiceId,
+    customerId: payment.customerId,
+    action: "updated",
+    oldValues: previousValues,
+    newValues: payment.toJSON()
   });
 
   const invoice = await Invoice.findOne({ where: { id: payment.invoiceId, userId: req.user.id } });
@@ -86,6 +107,17 @@ export async function updatePayment(req, res) {
 export async function deletePayment(req, res) {
   const payment = await Payment.findOne({ where: { id: req.params.id, userId: req.user.id } });
   if (!payment) return res.status(404).json({ message: "Payment not found." });
+
+  const previousValues = payment.toJSON();
+  await PaymentAuditLog.create({
+    userId: req.user.id,
+    paymentId: payment.id,
+    invoiceId: payment.invoiceId,
+    customerId: payment.customerId,
+    action: "deleted",
+    oldValues: previousValues,
+    newValues: null
+  });
 
   await payment.destroy();
   res.status(204).end();

@@ -1,4 +1,4 @@
-import { ArrowLeft, Download, Mail, Pencil, Printer } from "lucide-react";
+import { AlertCircle, ArrowLeft, Download, Mail, Pencil, Printer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, API_URL } from "../api.js";
@@ -47,6 +47,21 @@ export default function InvoiceDetailPage() {
     }
   }
 
+  async function sendReminder() {
+    const email = window.prompt("Send reminder to:", invoice.Customer.email || "");
+    if (!email) return;
+    try {
+      const data = await api(`/reminders/invoices/${id}/remind`, {
+        method: "POST",
+        body: JSON.stringify({ email })
+      });
+      setMessage(data.message);
+      load();
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+
   async function markPaid() {
     await api(`/invoices/${id}/status`, {
       method: "PATCH",
@@ -62,7 +77,7 @@ export default function InvoiceDetailPage() {
     <div className="page invoice-detail-page">
       <header className="page-header no-print">
         <div><Link className="back-link" to="/invoices"><ArrowLeft size={16} /> Back to invoices</Link><div className="title-with-status"><h1>{invoice.invoiceNumber}</h1><StatusBadge status={invoice.status} /></div><p>Created {invoice.invoiceDate} · Due {invoice.dueDate || "on receipt"}</p></div>
-        <div className="header-actions"><Link className="button secondary" to={`/invoices/${id}/edit`}><Pencil size={17} /> Edit</Link><button className="button secondary" onClick={sendEmail}><Mail size={17} /> Email</button><button className="button secondary" onClick={downloadPdf}><Download size={17} /> PDF</button><button className="button primary" onClick={() => window.print()}><Printer size={17} /> Print</button></div>
+        <div className="header-actions"><Link className="button secondary" to={`/invoices/${id}/edit`}><Pencil size={17} /> Edit</Link><button className="button secondary" onClick={sendEmail}><Mail size={17} /> Email</button><button className="button secondary" onClick={sendReminder}><AlertCircle size={17} /> Reminder</button><button className="button secondary" onClick={downloadPdf}><Download size={17} /> PDF</button><button className="button primary" onClick={() => window.print()}><Printer size={17} /> Print</button></div>
       </header>
       {message && <div className={`alert no-print ${message.includes("sent") ? "success" : "error"}`}>{message}</div>}
       <article className="invoice-paper">

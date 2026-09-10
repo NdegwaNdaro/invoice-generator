@@ -11,11 +11,11 @@ function createToken(user) {
 }
 
 function publicUser(user) {
-  return { id: user.id, name: user.name, email: user.email };
+  return { id: user.id, name: user.name, email: user.email, role: user.role };
 }
 
 export async function register(req, res) {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   if (!name?.trim() || !email?.trim() || !password || password.length < 8) {
     return res.status(400).json({
       message: "Name, email, and a password of at least 8 characters are required."
@@ -27,10 +27,13 @@ export async function register(req, res) {
     return res.status(409).json({ message: "An account with this email already exists." });
   }
 
+  const safeRole = ["admin", "manager", "staff"].includes(role) ? role : "manager";
+
   const user = await User.create({
     name: name.trim(),
     email: normalizedEmail,
-    password: await bcrypt.hash(password, 12)
+    password: await bcrypt.hash(password, 12),
+    role: safeRole
   });
   await Setting.create({
     userId: user.id,

@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
+import CustomerLedgerPage from "./pages/CustomerLedgerPage.jsx";
 import CustomersPage from "./pages/CustomersPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import InvoiceDetailPage from "./pages/InvoiceDetailPage.jsx";
@@ -12,6 +13,7 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import PaymentsPage from "./pages/PaymentsPage.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.jsx";
 import RecurringInvoicesPage from "./pages/RecurringInvoicesPage.jsx";
+import ReportsPage from "./pages/ReportsPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import TermsPage from "./pages/TermsPage.jsx";
 
@@ -34,12 +36,14 @@ export default function App() {
       <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<DashboardPage />} />
         <Route path="/customers" element={<CustomersPage />} />
+        <Route path="/customers/:id/ledger" element={<CustomerLedgerPage />} />
         <Route path="/invoices" element={<InvoicesPage />} />
         <Route path="/invoices/new" element={<InvoiceFormPage />} />
         <Route path="/invoices/:id/edit" element={<InvoiceFormPage />} />
         <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
         <Route path="/payments" element={<PaymentsPage />} />
         <Route path="/recurring-invoices" element={<RecurringInvoicesPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />

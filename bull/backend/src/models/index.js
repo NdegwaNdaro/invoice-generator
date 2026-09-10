@@ -5,7 +5,12 @@ export const User = sequelize.define("User", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   name: { type: DataTypes.STRING(100), allowNull: false },
   email: { type: DataTypes.STRING(150), allowNull: false, unique: true },
-  password: { type: DataTypes.STRING, allowNull: false }
+  password: { type: DataTypes.STRING, allowNull: false },
+  role: {
+    type: DataTypes.ENUM("admin", "manager", "staff"),
+    allowNull: false,
+    defaultValue: "manager"
+  }
 });
 
 export const Customer = sequelize.define("Customer", {
@@ -101,6 +106,21 @@ export const InvoiceItem = sequelize.define("InvoiceItem", {
   amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false }
 });
 
+export const PaymentAuditLog = sequelize.define("PaymentAuditLog", {
+  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
+  paymentId: { type: DataTypes.INTEGER, allowNull: false },
+  invoiceId: { type: DataTypes.INTEGER, allowNull: false },
+  customerId: { type: DataTypes.INTEGER, allowNull: false },
+  action: {
+    type: DataTypes.ENUM("created", "updated", "deleted"),
+    allowNull: false
+  },
+  oldValues: { type: DataTypes.JSON, defaultValue: null },
+  newValues: { type: DataTypes.JSON, defaultValue: null },
+  createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW }
+});
+
 User.hasMany(Customer, { foreignKey: "userId", onDelete: "CASCADE" });
 Customer.belongsTo(User, { foreignKey: "userId" });
 User.hasMany(Invoice, { foreignKey: "userId", onDelete: "CASCADE" });
@@ -127,5 +147,12 @@ User.hasMany(RecurringInvoice, { foreignKey: "userId", onDelete: "CASCADE" });
 RecurringInvoice.belongsTo(User, { foreignKey: "userId" });
 Customer.hasMany(RecurringInvoice, { foreignKey: "customerId", onDelete: "RESTRICT" });
 RecurringInvoice.belongsTo(Customer, { foreignKey: "customerId" });
+
+User.hasMany(PaymentAuditLog, { foreignKey: "userId", onDelete: "CASCADE" });
+PaymentAuditLog.belongsTo(User, { foreignKey: "userId" });
+Invoice.hasMany(PaymentAuditLog, { foreignKey: "invoiceId", onDelete: "CASCADE" });
+PaymentAuditLog.belongsTo(Invoice, { foreignKey: "invoiceId" });
+Customer.hasMany(PaymentAuditLog, { foreignKey: "customerId", onDelete: "CASCADE" });
+PaymentAuditLog.belongsTo(Customer, { foreignKey: "customerId" });
 
 export { sequelize };
