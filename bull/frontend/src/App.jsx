@@ -9,7 +9,9 @@ import InvoiceDetailPage from "./pages/InvoiceDetailPage.jsx";
 import InvoiceFormPage from "./pages/InvoiceFormPage.jsx";
 import InvoicesPage from "./pages/InvoicesPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import PaymentsPage from "./pages/PaymentsPage.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.jsx";
+import RecurringInvoicesPage from "./pages/RecurringInvoicesPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import TermsPage from "./pages/TermsPage.jsx";
 
@@ -36,6 +38,8 @@ export default function App() {
         <Route path="/invoices/new" element={<InvoiceFormPage />} />
         <Route path="/invoices/:id/edit" element={<InvoiceFormPage />} />
         <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
+        <Route path="/payments" element={<PaymentsPage />} />
+        <Route path="/recurring-invoices" element={<RecurringInvoicesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />

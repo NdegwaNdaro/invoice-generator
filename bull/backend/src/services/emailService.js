@@ -32,3 +32,12 @@ export async function sendInvoiceEmail({ invoice, settings, recipient, pdf }) {
     ]
   });
 }
+
+export async function sendOverdueReminderEmail({ invoice, settings, recipient }) {
+  await mailTransport().sendMail({
+    from: process.env.SMTP_FROM || settings.email || process.env.SMTP_USER,
+    to: recipient,
+    subject: `Payment reminder: Invoice ${invoice.invoiceNumber}`,
+    text: `Hello ${invoice.Customer.name},\n\nThis is a payment reminder for invoice ${invoice.invoiceNumber}. The invoice total is ${settings.currency} ${Number(invoice.total).toFixed(2)} and it was due on ${invoice.dueDate || "the original due date"}.\n\nPlease settle the outstanding balance as soon as possible.\n\n${settings.paymentTerms}\n`
+  });
+}

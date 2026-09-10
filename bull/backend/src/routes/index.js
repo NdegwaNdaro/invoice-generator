@@ -1,5 +1,6 @@
 import { Router } from "express";
 import authRoutes from "./authRoutes.js";
+import customerLedgerRoutes from "./customerLedgerRoutes.js";
 import customerRoutes from "./customerRoutes.js";
 import invoiceRoutes from "./invoiceRoutes.js";
 import paymentRoutes from "./paymentRoutes.js";
@@ -14,6 +15,7 @@ router.use("/auth", authRoutes);
 router.use(requireAuth);
 router.get("/dashboard", asyncHandler(dashboardSummary));
 router.use("/customers", customerRoutes);
+router.use("/customers", customerLedgerRoutes);
 router.use("/invoices", invoiceRoutes);
 router.use("/payments", paymentRoutes);
 router.use("/recurring-invoices", recurringInvoiceRoutes);
