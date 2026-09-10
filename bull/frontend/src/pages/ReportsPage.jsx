@@ -22,7 +22,7 @@ export default function ReportsPage() {
             <p className="eyebrow dark">REPORTS</p>
             <h1>Revenue summary</h1>
           </div>
-        </div>
+        </header>
         <div className="panel">
           <p>{error || "Loading report…"}</p>
         </div>

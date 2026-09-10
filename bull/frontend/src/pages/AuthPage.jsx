@@ -7,7 +7,7 @@ export default function AuthPage({ mode }) {
   const isRegister = mode === "register";
   const { user, authenticate } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "ceo", roleDescription: "Chief Executive Officer" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -53,7 +53,18 @@ export default function AuthPage({ mode }) {
           <p>{isRegister ? "Set up your invoice workspace in a minute." : "Manage your customers and invoices."}</p>
           {error && <div className="alert error">{error}</div>}
           {isRegister && (
-            <label>Full name<input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Jane Wanjiku" /></label>
+            <>
+              <label>Full name<input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Jane Wanjiku" /></label>
+              <label>Role in the company
+                <select value={form.role} onChange={(event) => setForm({ ...form, role: event.target.value })}>
+                  <option value="ceo">CEO / Founder</option>
+                  <option value="admin">Admin</option>
+                  <option value="manager">Manager</option>
+                  <option value="staff">Staff</option>
+                </select>
+              </label>
+              <label>Role description<input value={form.roleDescription} onChange={(event) => setForm({ ...form, roleDescription: event.target.value })} placeholder="Business owner and company leader" /></label>
+            </>
           )}
           <label>Email address<input type="email" required value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="jane@business.com" /></label>
           <label>

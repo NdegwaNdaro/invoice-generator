@@ -1,43 +1,69 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 
-export const User = sequelize.define("User", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  name: { type: DataTypes.STRING(100), allowNull: false },
-  email: { type: DataTypes.STRING(150), allowNull: false, unique: true },
-  password: { type: DataTypes.STRING, allowNull: false },
-  role: {
-    type: DataTypes.ENUM("admin", "manager", "staff"),
-    allowNull: false,
-    defaultValue: "manager"
+export const User = sequelize.define(
+  "User",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    name: { type: DataTypes.STRING(100), allowNull: false },
+    email: { type: DataTypes.STRING(150), allowNull: false, unique: true },
+    password: { type: DataTypes.STRING, allowNull: false },
+    role: {
+      type: DataTypes.ENUM("admin", "manager", "staff", "ceo"),
+      allowNull: false,
+      defaultValue: "manager"
+    },
+    roleDescription: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: "Business owner"
+    }
+  },
+  {
+    tableName: "users",
+    freezeTableName: true
   }
-});
+);
 
-export const Customer = sequelize.define("Customer", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  userId: { type: DataTypes.INTEGER, allowNull: false },
-  name: { type: DataTypes.STRING(150), allowNull: false },
-  email: { type: DataTypes.STRING(150) },
-  phone: { type: DataTypes.STRING(30) },
-  address: { type: DataTypes.TEXT }
-});
-
-export const Setting = sequelize.define("Setting", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  userId: { type: DataTypes.INTEGER, allowNull: false, unique: true },
-  businessName: { type: DataTypes.STRING(180), allowNull: false, defaultValue: "" },
-  email: { type: DataTypes.STRING(150), defaultValue: "" },
-  phone: { type: DataTypes.STRING(30), defaultValue: "" },
-  address: { type: DataTypes.TEXT, defaultValue: "" },
-  logo: { type: DataTypes.STRING, defaultValue: "" },
-  currency: { type: DataTypes.STRING(10), allowNull: false, defaultValue: "KES" },
-  taxRate: { type: DataTypes.DECIMAL(5, 2), allowNull: false, defaultValue: 16 },
-  paymentTerms: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    defaultValue: "Payment due within 30 days."
+export const Customer = sequelize.define(
+  "Customer",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
+    name: { type: DataTypes.STRING(150), allowNull: false },
+    email: { type: DataTypes.STRING(150) },
+    phone: { type: DataTypes.STRING(30) },
+    address: { type: DataTypes.TEXT }
+  },
+  {
+    tableName: "customers",
+    freezeTableName: true
   }
-});
+);
+
+export const Setting = sequelize.define(
+  "Setting",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false, unique: true },
+    businessName: { type: DataTypes.STRING(180), allowNull: false, defaultValue: "" },
+    email: { type: DataTypes.STRING(150), defaultValue: "" },
+    phone: { type: DataTypes.STRING(30), defaultValue: "" },
+    address: { type: DataTypes.TEXT, defaultValue: "" },
+    logo: { type: DataTypes.STRING, defaultValue: "" },
+    currency: { type: DataTypes.STRING(10), allowNull: false, defaultValue: "KES" },
+    taxRate: { type: DataTypes.DECIMAL(5, 2), allowNull: false, defaultValue: 16 },
+    paymentTerms: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: "Payment due within 30 days."
+    }
+  },
+  {
+    tableName: "settings",
+    freezeTableName: true
+  }
+);
 
 export const Invoice = sequelize.define(
   "Invoice",
@@ -61,65 +87,95 @@ export const Invoice = sequelize.define(
     notes: { type: DataTypes.TEXT, defaultValue: "" }
   },
   {
+    tableName: "invoices",
+    freezeTableName: true,
     indexes: [{ unique: true, fields: ["user_id", "invoice_number"] }]
   }
 );
 
-export const Payment = sequelize.define("Payment", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  userId: { type: DataTypes.INTEGER, allowNull: false },
-  invoiceId: { type: DataTypes.INTEGER, allowNull: false },
-  customerId: { type: DataTypes.INTEGER, allowNull: false },
-  amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
-  paymentDate: { type: DataTypes.DATEONLY, allowNull: false },
-  method: { type: DataTypes.STRING(30), defaultValue: "bank_transfer" },
-  notes: { type: DataTypes.TEXT, defaultValue: "" }
-});
-
-export const RecurringInvoice = sequelize.define("RecurringInvoice", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  userId: { type: DataTypes.INTEGER, allowNull: false },
-  customerId: { type: DataTypes.INTEGER, allowNull: false },
-  title: { type: DataTypes.STRING(160), allowNull: false },
-  description: { type: DataTypes.TEXT, defaultValue: "" },
-  amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
-  frequency: {
-    type: DataTypes.ENUM("weekly", "monthly", "quarterly"),
-    allowNull: false,
-    defaultValue: "monthly"
+export const Payment = sequelize.define(
+  "Payment",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
+    invoiceId: { type: DataTypes.INTEGER, allowNull: false },
+    customerId: { type: DataTypes.INTEGER, allowNull: false },
+    amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+    paymentDate: { type: DataTypes.DATEONLY, allowNull: false },
+    method: { type: DataTypes.STRING(30), defaultValue: "bank_transfer" },
+    notes: { type: DataTypes.TEXT, defaultValue: "" }
   },
-  nextRunDate: { type: DataTypes.DATEONLY, allowNull: false },
-  status: {
-    type: DataTypes.ENUM("active", "paused"),
-    allowNull: false,
-    defaultValue: "active"
-  },
-  notes: { type: DataTypes.TEXT, defaultValue: "" }
-});
+  {
+    tableName: "payments",
+    freezeTableName: true
+  }
+);
 
-export const InvoiceItem = sequelize.define("InvoiceItem", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  invoiceId: { type: DataTypes.INTEGER, allowNull: false },
-  description: { type: DataTypes.STRING(255), allowNull: false },
-  quantity: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-  rate: { type: DataTypes.DECIMAL(12, 2), allowNull: false },
-  amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false }
-});
-
-export const PaymentAuditLog = sequelize.define("PaymentAuditLog", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  userId: { type: DataTypes.INTEGER, allowNull: false },
-  paymentId: { type: DataTypes.INTEGER, allowNull: false },
-  invoiceId: { type: DataTypes.INTEGER, allowNull: false },
-  customerId: { type: DataTypes.INTEGER, allowNull: false },
-  action: {
-    type: DataTypes.ENUM("created", "updated", "deleted"),
-    allowNull: false
+export const RecurringInvoice = sequelize.define(
+  "RecurringInvoice",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
+    customerId: { type: DataTypes.INTEGER, allowNull: false },
+    title: { type: DataTypes.STRING(160), allowNull: false },
+    description: { type: DataTypes.TEXT, defaultValue: "" },
+    amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, defaultValue: 0 },
+    frequency: {
+      type: DataTypes.ENUM("weekly", "monthly", "quarterly"),
+      allowNull: false,
+      defaultValue: "monthly"
+    },
+    nextRunDate: { type: DataTypes.DATEONLY, allowNull: false },
+    status: {
+      type: DataTypes.ENUM("active", "paused"),
+      allowNull: false,
+      defaultValue: "active"
+    },
+    notes: { type: DataTypes.TEXT, defaultValue: "" }
   },
-  oldValues: { type: DataTypes.JSON, defaultValue: null },
-  newValues: { type: DataTypes.JSON, defaultValue: null },
-  createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW }
-});
+  {
+    tableName: "recurring_invoices",
+    freezeTableName: true
+  }
+);
+
+export const InvoiceItem = sequelize.define(
+  "InvoiceItem",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    invoiceId: { type: DataTypes.INTEGER, allowNull: false },
+    description: { type: DataTypes.STRING(255), allowNull: false },
+    quantity: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
+    rate: { type: DataTypes.DECIMAL(12, 2), allowNull: false },
+    amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false }
+  },
+  {
+    tableName: "invoice_items",
+    freezeTableName: true
+  }
+);
+
+export const PaymentAuditLog = sequelize.define(
+  "PaymentAuditLog",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
+    paymentId: { type: DataTypes.INTEGER, allowNull: false },
+    invoiceId: { type: DataTypes.INTEGER, allowNull: false },
+    customerId: { type: DataTypes.INTEGER, allowNull: false },
+    action: {
+      type: DataTypes.ENUM("created", "updated", "deleted"),
+      allowNull: false
+    },
+    oldValues: { type: DataTypes.JSON, defaultValue: null },
+    newValues: { type: DataTypes.JSON, defaultValue: null },
+    createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW }
+  },
+  {
+    tableName: "payment_audit_logs",
+    freezeTableName: true
+  }
+);
 
 User.hasMany(Customer, { foreignKey: "userId", onDelete: "CASCADE" });
 Customer.belongsTo(User, { foreignKey: "userId" });

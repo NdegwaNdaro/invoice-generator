@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
+import AuditTrailPage from "./pages/AuditTrailPage.jsx";
 import CustomerLedgerPage from "./pages/CustomerLedgerPage.jsx";
 import CustomersPage from "./pages/CustomersPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/invoices/:id/edit" element={<InvoiceFormPage />} />
         <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
         <Route path="/payments" element={<PaymentsPage />} />
+        <Route path="/audit" element={<AuditTrailPage />} />
         <Route path="/recurring-invoices" element={<RecurringInvoicesPage />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
